@@ -1,0 +1,26 @@
+table {
+    margin: 24px auto;
+    border: 1px solid green;
+}
+
+table th {
+    background-color: green;
+    color: white;
+}
+table tr {
+    cursor: pointer;
+    background-color: white;
+    height: 40px;
+}
+table tr:nth-child(2n+1) {
+    background-color: whitesmoke;
+}
+table td {
+    padding: 2px 8px;
+    border-right: 1px solid white;
+    border-left: 1px solid green;
+}
+table td:last-child {
+    padding: 2px 8px;
+    border-right: none;
+}
