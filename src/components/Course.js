@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
-import { insert, update, read } from '../services/apiService';
+import { insert, update, read, remove } from '../services/apiService';
 const Course = ({match, history}) => {
+
+    const [requiredMessage, setMessage] = useState('')
 
     const [id] = useState(match.params.id);
     const [course, setCourse] = useState({
@@ -8,7 +10,6 @@ const Course = ({match, history}) => {
         name: '',
         points: 0
     });
-
 useEffect(() => {
     if(id !== '0'){
         read('courses', id, data => {
@@ -28,19 +29,29 @@ function changeHandler(e) {
     }
 
     const save = () => {
-        if(id === '0') {
+        if(!course.name || !course.points) {
+            setMessage('!This filed is required!');
+        } else {
+            if(id === '0'){
+                course._id = undefined;
             insert('courses', course, data => {
               if(data) return history.push('/courses');
               console.log('There was error');
             })
         } else {
-            update('course', id, course, data => {
+            update('courses', id, course, data => {
                 if(data) return history.push('/courses');
                 console.log('There was error');   
             })
         }
     }
+}
 
+    const del = () => {
+        remove('courses', id, data => {
+            history.push('/courses');
+        })
+    }
  return (
  <div className='container'>
      <h2>Course</h2>
@@ -51,6 +62,7 @@ function changeHandler(e) {
                     name='name' 
                     value={course.name}
                     onChange={changeHandler}/>
+        <div>{requiredMessage}</div>
         </div>
         <div style={{margin:'15px 0'}} >
             <label htmlFor='name'>Course points:</label>
@@ -58,11 +70,14 @@ function changeHandler(e) {
                     name='points'
                     value={course.points}
                     onChange={changeHandler}/>
+         <div>{requiredMessage}</div>
         </div>
         <hr />
+        {id !== '0' && (
         <div className='left'>
-            <button type='button'>DELETE</button>
+            <button type='button' onClick={del}>DELETE</button>
         </div>
+        )}
         <div className='right'>
             <button type='button' onClick={back}>BACK</button>
             &nbsp;
